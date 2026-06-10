@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.young.sample.adblib.protocol.ShellProtocolTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-06-10T12:16:16" hostname="Mac" time="0.002">
+  <properties/>
+  <testcase name="parse exit with code zero" classname="com.young.sample.adblib.protocol.ShellProtocolTest" time="0.001"/>
+  <testcase name="parse multiple packets in one WRTE" classname="com.young.sample.adblib.protocol.ShellProtocolTest" time="0.0"/>
+  <testcase name="build stdin check format" classname="com.young.sample.adblib.protocol.ShellProtocolTest" time="0.0"/>
+  <testcase name="parse empty list for empty data" classname="com.young.sample.adblib.protocol.ShellProtocolTest" time="0.0"/>
+  <testcase name="mixed stdout and stderr in same WRTE" classname="com.young.sample.adblib.protocol.ShellProtocolTest" time="0.0"/>
+  <testcase name="build stdin has proper varint length" classname="com.young.sample.adblib.protocol.ShellProtocolTest" time="0.0"/>
+  <testcase name="parse empty payload returns null" classname="com.young.sample.adblib.protocol.ShellProtocolTest" time="0.0"/>
+  <testcase name="stdin is ignored on parse" classname="com.young.sample.adblib.protocol.ShellProtocolTest" time="0.0"/>
+  <testcase name="parse stderr packet" classname="com.young.sample.adblib.protocol.ShellProtocolTest" time="0.0"/>
+  <testcase name="build stdin empty input" classname="com.young.sample.adblib.protocol.ShellProtocolTest" time="0.0"/>
+  <testcase name="parse stdout packet" classname="com.young.sample.adblib.protocol.ShellProtocolTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

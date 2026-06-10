@@ -31,4 +31,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "ADBTools"
 include(":app")
+include(":adb-lib")
  

@@ -1,10 +1,10 @@
 # AGENTS.md — 主要文档
 
-> **此文件是本项目的主要参考文档。** CLAUDE.md 作为补充。当两者信息冲突时，以 AGENTS.md 为准。后续内容更新优先写入此处。
+> **此文件是本项目的主要参考文档**。CLAUDE.md 作为补充。当两者信息冲突时，以 AGENTS.md 为准。后续内容更新优先写入此处。
 
 # ADBTools
 
-Android Jetpack Compose sample project. Single module, minimal dependencies.
+Android Jetpack Compose 项目 + 纯 Kotlin/JVM ADB 客户端库 (`:adb-lib`)。
 
 ## Build system
 
@@ -17,75 +17,75 @@ Android Jetpack Compose sample project. Single module, minimal dependencies.
 | compileSdk / targetSdk | 35 |
 | minSdk | 24 |
 | Java target | 11 |
+| coroutines | 1.8.1 |
 
 Gradle wrapper at `gradlew`. Version catalog at `gradle/libs.versions.toml`.
 
-## Key commands
-
-```sh
-./gradlew assembleDebug          # build debug APK
-./gradlew installDebug           # build + install on connected device
-./gradlew test                   # run unit tests (JVM)
-./gradlew connectedAndroidTest   # run instrumented tests (device/emulator)
-./gradlew lint                   # static analysis
-./gradlew :app:dependencies      # inspect dependency tree
-```
-
-Run a single unit test:
-```sh
-./gradlew test --tests "com.young.sample.adbtools.ExampleUnitTest"
-```
-
-Run a single instrumented test:
-```sh
-./gradlew connectedAndroidTest --tests "com.young.sample.adbtools.ExampleInstrumentedTest"
-```
-
-## Project structure
+## Modules
 
 ```
 ADBTools/
-├── app/
-│   ├── src/main/java/com/young/sample/adbtools/
-│   │   ├── MainActivity.kt          # single entry point
-│   │   └── ui/theme/                # Color.kt, Type.kt, Theme.kt
-│   ├── src/test/java/.../            # JVM unit tests
-│   └── src/androidTest/java/.../     # instrumented tests
-├── gradle/libs.versions.toml        # version catalog
-├── build.gradle.kts                  # root (plugin declarations only)
-└── settings.gradle.kts               # single :app module
+├── adb-lib/                    # 独立 Android Library 模块 (:adb-lib)
+│   └── src/main/kotlin/com/young/sample/adblib/
+│       ├── AdbClient.kt        # 公开主入口
+│       ├── AdbConfig.kt        # 连接配置
+│       ├── AdbCommand.kt       # 协议命令常量
+│       ├── transport/          # 传输层 (Transport, TcpTransport, AuthHandler, AdbSession, AdbStream)
+│       ├── protocol/           # 协议层 (AdbMessage, AdbPacket, ShellProtocol)
+│       ├── service/            # 服务层 (HostServices, ShellService, SyncService, FramebufferService)
+│       └── model/              # 数据模型 (AdbDevice, AdbException, SyncEntry, ForwardEntry 等)
+├── app/                        # Android 应用模块 (:app)
+│   └── src/main/java/com/young/sample/adbtools/
+│       ├── MainActivity.kt     # 入口，Compose Navigation
+│       └── ui/
+│           ├── navigation/     # NavRoutes + AppNavigation
+│           ├── screens/        # DeviceListScreen, ShellScreen
+│           ├── viewmodel/      # DeviceViewModel, ShellViewModel
+│           └── theme/          # Color.kt, Type.kt, Theme.kt
+└── docs/                       # 设计文档
 ```
 
 ## Architecture
 
-- Single `ComponentActivity` (`MainActivity`) with `enableEdgeToEdge()` + `setContent {}`
-- Jetpack Compose with Material 3
-- Dynamic color on Android 12+ (`Build.VERSION_CODES.S`), fallback to static purple/pink palette
-- No navigation library, no DI framework, no ViewModels yet
-- No ADB-specific code yet — it's a starter template despite the repo name
+### 分层架构
+
+```
+App / UI Layer (Compose + ViewModel)
+    └── adb-lib API (AdbClient)
+         ├── Service Layer (HostServices, ShellService, SyncService)
+         ├── Session & Stream Layer (AdbSession, AdbStream)
+         ├── Protocol Layer (AdbMessage, AdbPacket, ShellProtocol)
+         └── Transport Layer (TcpTransport, AuthHandler)
+```
+
+### 连接模型
+
+- **AdbClient**: 管理 Host 级操作（getDevices, trackDevices, forward 等），每个方法使用短连接
+- **AdbSession**: 每个目标设备一条独立 TCP 连接，通过 `host:transport:<serial>` 切换
+- **AdbStream**: 设备上的一个服务流（shell, sync, framebuffer 等）
+
+关键设计约束：Smart Socket 协议中 `host:transport` 后该连接不能再发 host 命令，因此 host 级操作和设备级操作使用不同的 TCP 连接。
+
+## Key commands
+
+```sh
+./gradlew :adb-lib:assembleDebug     # build adb-lib AAR
+./gradlew :app:assembleDebug         # build + package APK
+./gradlew :adb-lib:test              # adb-lib unit tests
+./gradlew :app:test                  # app unit tests
+./gradlew test                       # all unit tests
+./gradlew lint                       # static analysis
+```
 
 ## Dependencies
 
-All via version catalog. Compose dependencies use the BOM for version alignment.
+**adb-lib**: `kotlinx-coroutines-core`, Java stdlib (零外部第三方依赖)
 
-**Runtime**: core-ktx 1.10.1, lifecycle-runtime-ktx 2.6.1, activity-compose 1.8.0, Compose UI + Material3.
-
-**Test**: JUnit 4.13.2, AndroidX Test JUnit 1.3.0, Espresso 3.7.0, Compose UI Test (via BOM).
+**app**: `core-ktx`, `lifecycle-runtime-ktx`, `activity-compose`, Compose UI + Material3 + Material Icons Extended, `lifecycle-viewmodel-compose`, `navigation-compose`, `:adb-lib`
 
 ## Conventions
 
-- `android.useAndroidX=true`, `android.nonTransitiveRClass=true`
-- Kotlin code style: `official`
+- Kotlin 代码风格: `official`
 - Java 11 source/target compatibility
-- Release build has ProGuard (`proguard-android-optimize.txt`) but minification is disabled
-- SDK at `/Users/jieyue/Library/Android/sdk` (local.properties, not committed)
-
-## SDK / ADB
-
-SDK path is `~/Library/Android/sdk`. ADB binary is at `$ANDROID_HOME/platform-tools/adb` or the SDK's `platform-tools/` directory.
-
-## Tests
-
-- Unit tests (JVM): `src/test/` — standard JUnit 4
-- Instrumented tests: `src/androidTest/` — run on device/emulator with `AndroidJUnit4`
-- Tests are currently the default template examples only
+- 协程友好：所有 IO 方法为 `suspend` 函数
+- UI 层使用 ViewModel + StateFlow，无 DI 框架
