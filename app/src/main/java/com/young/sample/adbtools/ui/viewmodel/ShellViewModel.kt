@@ -2,6 +2,7 @@ package com.young.sample.adbtools.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.util.Log
 import com.young.sample.adblib.service.ShellService
 import com.young.sample.adblib.transport.AdbSession
 import kotlinx.coroutines.Job
@@ -20,6 +21,10 @@ class ShellViewModel(
     private val serial: String,
     private val session: AdbSession
 ) : ViewModel() {
+
+    companion object {
+        private const val TAG = "ADB-ShellVM"
+    }
 
     private val shellService = ShellService(session)
 
@@ -57,8 +62,10 @@ class ShellViewModel(
         currentJob = viewModelScope.launch {
             _isRunning.value = true
             _error.value = null
+            Log.d(TAG, "[$serial] 执行: $command")
             try {
                 val result = shellService.exec(command)
+                Log.d(TAG, "[$serial] 完成: exit=${result.exitCode}, stdout=${result.stdout.length}B, stderr=${result.stderr.length}B")
                 if (result.stdout.isNotBlank()) {
                     addLine(ShellLine(text = result.stdout.trimEnd()))
                 }

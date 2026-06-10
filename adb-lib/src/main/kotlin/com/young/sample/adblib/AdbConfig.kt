@@ -5,7 +5,7 @@ package com.young.sample.adblib
  */
 data class AdbConfig(
     val host: String = "127.0.0.1",
-    val port: Int = 5037,
+    val port: Int = 5555,
     val connectTimeoutMs: Long = 5000,
     val readTimeoutMs: Long = 30000,
     val maxRetries: Int = 5

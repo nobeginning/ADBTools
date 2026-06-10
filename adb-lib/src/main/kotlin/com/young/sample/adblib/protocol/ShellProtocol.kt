@@ -37,28 +37,80 @@ object ShellProtocol {
 
     /**
      * 从 WRTE payload 中解析 Shell V2 子包。
-     * @return 解析出的 ShellData，如果数据不完整返回 null
+     *
+     * ⚠ 支持两种长度编码格式：
+     *   - 标准 AOSP: [id:1B][length:varint][payload]
+     *   - MIUI adbd: [id:1B][length:4B LE uint32][payload]
+     *   自动检测：当 varint 解码为 0 且第二字节为 0x00 时，尝试 4B LE 格式。
+     *
+     * @return Pair(ShellData, consumedBytes) 或 null（数据不完整/未知类型）
      */
-    fun parsePacket(data: ByteArray): ShellData? {
-        if (data.isEmpty()) return null
+    private fun tryParsePacket(data: ByteArray): Pair<ShellData, Int>? {
+        if (data.size < 2) return null
 
         val type = data[0]
-        val (len, readBytes) = decodeVarint(data, 1)
-        if (len < 0 || readBytes < 0) return null
+        if (type != ID_STDOUT && type != ID_STDERR && type != ID_EXIT) return null
 
-        val payloadStart = 1 + readBytes
-        val payloadEnd = payloadStart + len
+        // 同时尝试标准 varint 和 MIUI 4B LE 两种长度编码
+        val (varintLen, varintBytes) = decodeVarint(data, 1)
 
-        // 数据不完整
-        if (data.size < payloadEnd) return null
+        val leLen = if (data.size >= 5) {
+            ((data[4].toInt() and 0xff) shl 24) or
+            ((data[3].toInt() and 0xff) shl 16) or
+            ((data[2].toInt() and 0xff) shl 8) or
+            (data[1].toInt() and 0xff)
+        } else -1
+
+        // 判断哪种格式更合理
+        val varintValid = varintLen >= 0 && varintBytes > 0 &&
+            data.size >= 1 + varintBytes + varintLen
+        val leValid = leLen in 1..(256 * 1024) && data.size >= 5 + leLen
+
+        val (payloadLen, headerSize) = when {
+            // 两者都有效：选 payload 不以 0x00 开头的（MIUI 的 4B LE 长度后紧跟文本）
+            varintValid && leValid -> {
+                val varintStartsNull = varintLen > 0 &&
+                    data[1 + varintBytes] == 0.toByte()
+                val leStartsNull = leLen > 0 && data[5] == 0.toByte()
+                if (varintStartsNull && !leStartsNull) {
+                    Pair(leLen, 4)
+                } else if (varintLen == 0 && data[1] == 0.toByte() && leLen > 0) {
+                    // varint 解出 0 + data[1]=0 → 典型 MIUI 大 payload
+                    Pair(leLen, 4)
+                } else {
+                    Pair(varintLen, varintBytes)
+                }
+            }
+            varintValid -> Pair(varintLen, varintBytes)
+            leValid -> {
+                if (leLen > 0 && data.size >= 5 && data[5] != 0.toByte()) {
+                    Pair(leLen, 4)
+                } else {
+                    return null
+                }
+            }
+            else -> return null
+        }
+
+        val payloadStart = 1 + headerSize
+        val payloadEnd = payloadStart + payloadLen
+        if (data.size < payloadEnd) return null  // 不完整
 
         val payload = data.copyOfRange(payloadStart, payloadEnd)
-        return when (type) {
+        val packet = when (type) {
             ID_STDOUT -> ShellData.Stdout(payload)
             ID_STDERR -> ShellData.Stderr(payload)
             ID_EXIT -> ShellData.Exit(decodeExitCode(payload))
-            else -> null // 未知类型（包括 stdin 从设备发来）
+            else -> return null
         }
+        return Pair(packet, payloadEnd)
+    }
+
+    /**
+     * 从 WRTE payload 中解析 Shell V2 子包（公开 API，保持向后兼容）。
+     */
+    fun parsePacket(data: ByteArray): ShellData? {
+        return tryParsePacket(data)?.first
     }
 
     /**
@@ -68,14 +120,10 @@ object ShellProtocol {
         val result = mutableListOf<ShellData>()
         var offset = 0
         while (offset < data.size) {
-            val packet = parsePacket(data.copyOfRange(offset, data.size))
-                ?: break // 数据不完整，等待下一个 WRTE
+            val (packet, consumed) = tryParsePacket(data.copyOfRange(offset, data.size))
+                ?: break // 数据不完整或未知类型
             result.add(packet)
-            // 计算此包占用的字节数
-            val typeLen = 1
-            val (protoLen, varintBytes) = decodeVarint(data, offset + 1)
-            if (protoLen < 0 || varintBytes < 0) break
-            offset += typeLen + varintBytes + protoLen
+            offset += consumed
         }
         return result
     }

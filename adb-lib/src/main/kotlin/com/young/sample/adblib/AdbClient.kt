@@ -1,15 +1,19 @@
 package com.young.sample.adblib
 
+import android.util.Log
 import com.young.sample.adblib.model.AdbDevice
 import com.young.sample.adblib.model.AdbException
 import com.young.sample.adblib.model.ForwardEntry
+import com.young.sample.adblib.protocol.AdbPacket
 import com.young.sample.adblib.service.HostServices
 import com.young.sample.adblib.service.ShellService
 import com.young.sample.adblib.service.SyncService
 import com.young.sample.adblib.transport.AdbSession
 import com.young.sample.adblib.transport.AdbStream
+import com.young.sample.adblib.transport.AuthHandler
 import com.young.sample.adblib.transport.TcpTransport
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 /**
  * ADB Client — 公开主入口。
@@ -99,6 +103,68 @@ class AdbClient(
         } catch (e: Exception) {
             transport.close()
             throw e
+        }
+    }
+
+    /**
+     * 直接连接到 adbd（绕过 ADB Server）。
+     *
+     * 适用场景：手机上运行 app，通过 `adb tcpip 5555` 启用 adbd TCP 监听后，
+     * 直接连接 127.0.0.1:5555 与手机自身的 adbd 通信。
+     *
+     * 连接流程: TCP connect → CNXN → AUTH（如需要）→ 返回 AdbSession
+     *
+     * @param host adbd 主机地址（通常 127.0.0.1）
+     * @param port adbd TCP 端口（通常 5555）
+     * @param keyStoreDir RSA 密钥对存储目录
+     * @return 已认证的 AdbSession，可用于 shell/sync/framebuffer 等操作
+     * @throws AdbException.ConnectionFailed 如果 TCP 连接失败
+     * @throws AdbException.AuthenticationFailed 如果认证失败
+     */
+    suspend fun connectDirect(host: String, port: Int, keyStoreDir: File): AdbSession {
+        val tag = "ADB-Client"
+        Log.i(tag, "直连 adbd: $host:$port  (密钥目录: ${keyStoreDir.absolutePath})")
+
+        val transport = TcpTransport(
+            host = host,
+            port = port,
+            connectTimeoutMs = config.connectTimeoutMs,
+            readTimeoutMs = config.readTimeoutMs
+        )
+
+        Log.d(tag, "正在建立 TCP 连接...")
+        transport.connect()
+        Log.i(tag, "✅ TCP 连接已建立: $host:$port")
+
+        try {
+            // 发送 CNXN 包（host 端 banner）
+            Log.d(tag, "发送 CNXN 握手包 (banner=host::, version=0x${AdbCommand.VERSION.toUInt().toString(16)})")
+            transport.write(AdbPacket.hostConnect())
+
+            // 认证握手：读取对端响应，走 CNXN 或 AUTH 流程
+            Log.d(tag, "开始认证握手...")
+            val authHandler = AuthHandler(keyStoreDir)
+            val success = authHandler.authenticate(transport)
+            if (!success) {
+                Log.e(tag, "❌ 认证被拒")
+                transport.close()
+                throw AdbException.AuthenticationFailed("Direct adbd authentication rejected")
+            }
+
+            // 创建 Session 并启动 read loop
+            Log.d(tag, "创建 AdbSession 并启动 read loop...")
+            val session = AdbSession(transport)
+            session.startReadLoop()
+            Log.i(tag, "✅ 直连 adbd 成功，session 已就绪")
+            return session
+        } catch (e: AdbException) {
+            Log.e(tag, "❌ 连接失败: ${e.message}")
+            transport.close()
+            throw e
+        } catch (e: Exception) {
+            Log.e(tag, "❌ 连接异常: ${e.message}", e)
+            transport.close()
+            throw AdbException.ConnectionFailed(host, port, e)
         }
     }
 

@@ -17,13 +17,13 @@ import java.net.Socket
 /**
  * ADB Host 级服务。
  *
- * 与 ADB Server（127.0.0.1:5037）直接通信，管理设备列表和端口转发。
+ * 与 ADB Server（127.0.0.1:5555）直接通信，管理设备列表和端口转发。
  * 注意：每个方法使用独立的 TCP 连接，在方法结束时关闭。
  * host:transport 后无法再发 host 命令，因此每个操作使用短连接。
  */
 class HostServices(
     private val host: String = "127.0.0.1",
-    private val port: Int = 5037,
+    private val port: Int = 5555,
     private val connectTimeoutMs: Long = 5000,
     private val readTimeoutMs: Long = 30000
 ) {

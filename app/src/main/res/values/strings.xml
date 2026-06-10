@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ADBTools</string>
+    <string name="accessibility_service_description">ADBTools 无障碍服务，用于获取设备 UI 信息和辅助自动化操作。</string>
 </resources>
