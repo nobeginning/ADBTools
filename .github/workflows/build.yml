@@ -1,8 +1,9 @@
-name: Build
+name: Build & Release
 
 on:
   push:
     branches: [ main ]
+    tags: [ "*" ]
   pull_request:
     branches: [ main ]
 
@@ -18,3 +19,24 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew :adb-lib:assembleRelease
       - run: ./gradlew :adb-lib:test
+
+      # Upload AAR as build artifact
+      - uses: actions/upload-artifact@v4
+        with:
+          name: adb-lib-aar
+          path: adb-lib/build/outputs/aar/*.aar
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: adb-lib-aar
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "*.aar"
+          generate_release_notes: true
