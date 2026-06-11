@@ -1,6 +1,6 @@
-package com.young.sample.adblib.transport
+package com.young.lib.adb.transport
 
-import com.young.sample.adblib.protocol.AdbPacket
+import com.young.lib.adb.protocol.AdbPacket
 import java.io.Closeable
 
 /**

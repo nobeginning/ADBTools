@@ -5,10 +5,10 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.young.sample.adblib.model.AdbException
-import com.young.sample.adblib.model.FramebufferResult
-import com.young.sample.adblib.service.FramebufferService
-import com.young.sample.adblib.transport.AdbSession
+import com.young.lib.adb.model.AdbException
+import com.young.lib.adb.model.FramebufferResult
+import com.young.lib.adb.service.FramebufferService
+import com.young.lib.adb.transport.AdbSession
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

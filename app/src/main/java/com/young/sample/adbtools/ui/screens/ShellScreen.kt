@@ -29,7 +29,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.young.sample.adblib.transport.AdbSession
+import com.young.lib.adb.transport.AdbSession
 import com.young.sample.adbtools.ui.viewmodel.ShellLine
 import com.young.sample.adbtools.ui.viewmodel.ShellViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel

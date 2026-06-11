@@ -1,4 +1,4 @@
-package com.young.sample.adblib.model
+package com.young.lib.adb.model
 
 /**
  * ADB 协议相关异常

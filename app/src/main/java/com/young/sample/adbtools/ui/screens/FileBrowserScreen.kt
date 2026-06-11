@@ -75,7 +75,7 @@ fun FileBrowserScreen(
     onBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
-    var selectedEntryForMenu by remember { mutableStateOf<com.young.sample.adblib.model.SyncEntry?>(null) }
+    var selectedEntryForMenu by remember { mutableStateOf<com.young.lib.adb.model.SyncEntry?>(null) }
 
     // 文件操作菜单
     if (selectedEntryForMenu != null) {
@@ -380,5 +380,5 @@ private fun formatTime(mtime: Long): String {
     }
 }
 
-private fun com.young.sample.adblib.model.SyncEntry.isDirectory(): Boolean =
+private fun com.young.lib.adb.model.SyncEntry.isDirectory(): Boolean =
     (mode shr 14) and 1 == 1

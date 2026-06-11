@@ -3,8 +3,8 @@ package com.young.sample.adbtools.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.util.Log
-import com.young.sample.adblib.service.ShellService
-import com.young.sample.adblib.transport.AdbSession
+import com.young.lib.adb.service.ShellService
+import com.young.lib.adb.transport.AdbSession
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

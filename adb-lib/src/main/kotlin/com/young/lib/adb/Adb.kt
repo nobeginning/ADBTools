@@ -1,11 +1,11 @@
-package com.young.sample.adblib
+package com.young.lib.adb
 
 import android.util.Log
-import com.young.sample.adblib.model.AdbException
-import com.young.sample.adblib.protocol.AdbPacket
-import com.young.sample.adblib.transport.AdbSession
-import com.young.sample.adblib.transport.AuthHandler
-import com.young.sample.adblib.transport.TcpTransport
+import com.young.lib.adb.model.AdbException
+import com.young.lib.adb.protocol.AdbPacket
+import com.young.lib.adb.transport.AdbSession
+import com.young.lib.adb.transport.AuthHandler
+import com.young.lib.adb.transport.TcpTransport
 import java.io.File
 
 /**

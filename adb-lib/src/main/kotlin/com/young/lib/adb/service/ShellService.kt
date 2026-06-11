@@ -1,11 +1,11 @@
-package com.young.sample.adblib.service
+package com.young.lib.adb.service
 
-import com.young.sample.adblib.model.AdbException
-import com.young.sample.adblib.model.ShellResult
-import com.young.sample.adblib.protocol.ShellData
-import com.young.sample.adblib.protocol.ShellProtocol
-import com.young.sample.adblib.transport.AdbSession
-import com.young.sample.adblib.transport.AdbStream
+import com.young.lib.adb.model.AdbException
+import com.young.lib.adb.model.ShellResult
+import com.young.lib.adb.protocol.ShellData
+import com.young.lib.adb.protocol.ShellProtocol
+import com.young.lib.adb.transport.AdbSession
+import com.young.lib.adb.transport.AdbStream
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

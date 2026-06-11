@@ -1,4 +1,4 @@
-package com.young.sample.adblib.model
+package com.young.lib.adb.model
 
 /**
  * Shell 命令执行结果

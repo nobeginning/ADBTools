@@ -1,8 +1,8 @@
-package com.young.sample.adblib.transport
+package com.young.lib.adb.transport
 
-import com.young.sample.adblib.AdbCommand
-import com.young.sample.adblib.model.AdbException
-import com.young.sample.adblib.protocol.AdbPacket
+import com.young.lib.adb.AdbCommand
+import com.young.lib.adb.model.AdbException
+import com.young.lib.adb.protocol.AdbPacket
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow

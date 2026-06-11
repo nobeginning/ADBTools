@@ -208,14 +208,14 @@ private fun KeySection(viewModel: InputViewModel, state: InputViewModel.UiState)
     SectionCard("模拟按键") {
         // 常用按键
         val commonKeys = listOf(
-            "HOME" to com.young.sample.adblib.service.InputService.KEYCODE_HOME,
-            "返回" to com.young.sample.adblib.service.InputService.KEYCODE_BACK,
-            "多任务" to com.young.sample.adblib.service.InputService.KEYCODE_APP_SWITCH,
-            "回车" to com.young.sample.adblib.service.InputService.KEYCODE_ENTER,
-            "音量+" to com.young.sample.adblib.service.InputService.KEYCODE_VOLUME_UP,
-            "音量-" to com.young.sample.adblib.service.InputService.KEYCODE_VOLUME_DOWN,
-            "电源" to com.young.sample.adblib.service.InputService.KEYCODE_POWER,
-            "菜单" to com.young.sample.adblib.service.InputService.KEYCODE_MENU
+            "HOME" to com.young.lib.adb.service.InputService.KEYCODE_HOME,
+            "返回" to com.young.lib.adb.service.InputService.KEYCODE_BACK,
+            "多任务" to com.young.lib.adb.service.InputService.KEYCODE_APP_SWITCH,
+            "回车" to com.young.lib.adb.service.InputService.KEYCODE_ENTER,
+            "音量+" to com.young.lib.adb.service.InputService.KEYCODE_VOLUME_UP,
+            "音量-" to com.young.lib.adb.service.InputService.KEYCODE_VOLUME_DOWN,
+            "电源" to com.young.lib.adb.service.InputService.KEYCODE_POWER,
+            "菜单" to com.young.lib.adb.service.InputService.KEYCODE_MENU
         )
         Row(
             modifier = Modifier.fillMaxWidth(),

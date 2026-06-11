@@ -1,10 +1,10 @@
-package com.young.sample.adblib.service
+package com.young.lib.adb.service
 
 import android.util.Log
-import com.young.sample.adblib.model.AdbException
-import com.young.sample.adblib.model.SyncEntry
-import com.young.sample.adblib.transport.AdbSession
-import com.young.sample.adblib.transport.AdbStream
+import com.young.lib.adb.model.AdbException
+import com.young.lib.adb.model.SyncEntry
+import com.young.lib.adb.transport.AdbSession
+import com.young.lib.adb.transport.AdbStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext

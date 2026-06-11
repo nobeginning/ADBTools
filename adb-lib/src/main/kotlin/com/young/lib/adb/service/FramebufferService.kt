@@ -1,9 +1,9 @@
-package com.young.sample.adblib.service
+package com.young.lib.adb.service
 
 import android.util.Log
-import com.young.sample.adblib.model.AdbException
-import com.young.sample.adblib.model.FramebufferResult
-import com.young.sample.adblib.transport.AdbSession
+import com.young.lib.adb.model.AdbException
+import com.young.lib.adb.model.FramebufferResult
+import com.young.lib.adb.transport.AdbSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -161,7 +161,7 @@ class FramebufferService(private val session: AdbSession) {
      * @param shortTimeout 是否使用短超时（用于缓冲数据收集阶段）
      * @return 数据块，null 表示流结束或超时
      */
-    private suspend fun com.young.sample.adblib.transport.AdbStream.readChunk(
+    private suspend fun com.young.lib.adb.transport.AdbStream.readChunk(
         first: Boolean,
         shortTimeout: Boolean = false
     ): ByteArray? {

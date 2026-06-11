@@ -1,10 +1,10 @@
-package com.young.sample.adblib.transport
+package com.young.lib.adb.transport
 
-import com.young.sample.adblib.AdbCommand
-import com.young.sample.adblib.model.AdbException
-import com.young.sample.adblib.protocol.AdbMessage
-import com.young.sample.adblib.protocol.AdbPacket
-import com.young.sample.adblib.protocol.toAdbPacket
+import com.young.lib.adb.AdbCommand
+import com.young.lib.adb.model.AdbException
+import com.young.lib.adb.protocol.AdbMessage
+import com.young.lib.adb.protocol.AdbPacket
+import com.young.lib.adb.protocol.toAdbPacket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.DataInputStream

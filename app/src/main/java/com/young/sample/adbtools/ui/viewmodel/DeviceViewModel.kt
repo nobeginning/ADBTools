@@ -4,9 +4,9 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.young.sample.adblib.Adb
-import com.young.sample.adblib.model.AdbException
-import com.young.sample.adblib.transport.AdbSession
+import com.young.lib.adb.Adb
+import com.young.lib.adb.model.AdbException
+import com.young.lib.adb.transport.AdbSession
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

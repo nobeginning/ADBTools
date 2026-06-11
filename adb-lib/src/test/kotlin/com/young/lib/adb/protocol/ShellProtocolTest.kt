@@ -1,4 +1,4 @@
-package com.young.sample.adblib.protocol
+package com.young.lib.adb.protocol
 
 import org.junit.Assert.*
 import org.junit.Test

@@ -30,7 +30,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.young.sample.adblib.transport.AdbSession
+import com.young.lib.adb.transport.AdbSession
 import com.young.sample.adbtools.ui.screens.AccessibilityScreen
 import com.young.sample.adbtools.ui.screens.DeviceListScreen
 import com.young.sample.adbtools.ui.screens.DevicePropsScreen

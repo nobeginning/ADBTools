@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.young.sample.adblib"
+    namespace = "com.young.lib.adb"
     compileSdk = 35
 
     defaultConfig {

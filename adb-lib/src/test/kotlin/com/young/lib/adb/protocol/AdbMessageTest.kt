@@ -1,6 +1,6 @@
-package com.young.sample.adblib.protocol
+package com.young.lib.adb.protocol
 
-import com.young.sample.adblib.AdbCommand
+import com.young.lib.adb.AdbCommand
 import org.junit.Assert.*
 import org.junit.Test
 import java.nio.ByteBuffer

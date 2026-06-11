@@ -1,9 +1,9 @@
-package com.young.sample.adblib.transport
+package com.young.lib.adb.transport
 
 import android.util.Log
-import com.young.sample.adblib.AdbCommand
-import com.young.sample.adblib.model.AdbException
-import com.young.sample.adblib.protocol.AdbPacket
+import com.young.lib.adb.AdbCommand
+import com.young.lib.adb.model.AdbException
+import com.young.lib.adb.protocol.AdbPacket
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow

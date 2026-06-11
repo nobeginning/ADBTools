@@ -1,6 +1,6 @@
-package com.young.sample.adblib.protocol
+package com.young.lib.adb.protocol
 
-import com.young.sample.adblib.AdbCommand
+import com.young.lib.adb.AdbCommand
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 

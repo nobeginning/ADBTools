@@ -1,4 +1,4 @@
-package com.young.sample.adblib
+package com.young.lib.adb
 
 /**
  * ADB 协议命令常量
