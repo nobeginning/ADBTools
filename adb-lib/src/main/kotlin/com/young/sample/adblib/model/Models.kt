@@ -1,33 +1,6 @@
 package com.young.sample.adblib.model
 
 /**
- * ADB 设备信息
- */
-data class AdbDevice(
-    val serial: String,
-    val state: DeviceState,
-    val devicePath: String? = null
-)
-
-/**
- * 设备连接状态
- */
-enum class DeviceState(val label: String) {
-    DEVICE("device"),
-    OFFLINE("offline"),
-    UNAUTHORIZED("unauthorized"),
-    BOOTLOADER("bootloader"),
-    RECOVERY("recovery"),
-    HOST("host"),
-    UNKNOWN("unknown");
-
-    companion object {
-        fun fromString(state: String): DeviceState =
-            entries.find { it.label == state } ?: UNKNOWN
-    }
-}
-
-/**
  * Shell 命令执行结果
  */
 data class ShellResult(
@@ -80,11 +53,3 @@ data class SyncEntry(
     val name: String
 )
 
-/**
- * 端口转发条目
- */
-data class ForwardEntry(
-    val serial: String,
-    val local: String,
-    val remote: String
-)

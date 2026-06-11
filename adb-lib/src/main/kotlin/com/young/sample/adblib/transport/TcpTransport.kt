@@ -16,10 +16,10 @@ import java.net.SocketTimeoutException
 /**
  * TCP 传输层实现。
  *
- * 连接到 ADB Server（默认 127.0.0.1:5037），提供协程友好的 read/write。
+ * 提供协程友好的 ADB 协议 read/write，基于 java.net.Socket。
  *
- * @param host ADB Server 主机地址
- * @param port ADB Server 端口
+ * @param host 目标主机地址
+ * @param port 目标端口
  * @param connectTimeoutMs TCP 连接超时
  * @param readTimeoutMs socket read 超时
  */
@@ -144,43 +144,6 @@ class TcpTransport(
             connected = false
             throw AdbException.ProtocolError("Write failed: ${e.message}")
         }
-    }
-
-    // ---- Smart Socket 协议（4字节 hex 长度前缀文本协议） ----
-
-    /**
-     * 发送 Smart Socket 请求。
-     * 格式: <4字节hex长度><文本命令>
-     */
-    fun writeSmartSocket(service: String) {
-        val stream = outputStream
-            ?: throw AdbException.ProtocolError("Not connected")
-        val hexLen = "%04x".format(service.length)
-        val request = (hexLen + service).toByteArray(Charsets.UTF_8)
-        stream.write(request)
-        stream.flush()
-    }
-
-    /**
-     * 读取 Smart Socket OKAY/FAIL 响应。
-     * OKAY = 成功，FAIL = 读取错误信息并抛异常。
-     */
-    fun readSmartSocketOkay() {
-        val stream = inputStream
-            ?: throw AdbException.ProtocolError("Not connected")
-        val response = ByteArray(4)
-        stream.readFully(response)
-        val responseStr = response.toString(Charsets.UTF_8)
-        if (responseStr == "OKAY") return
-        if (responseStr == "FAIL") {
-            val hexLen = ByteArray(4)
-            stream.readFully(hexLen)
-            val len = hexLen.toString(Charsets.UTF_8).toInt(16)
-            val errorMsg = ByteArray(len)
-            stream.readFully(errorMsg)
-            throw AdbException.ProtocolError("ADB request failed: ${errorMsg.toString(Charsets.UTF_8)}")
-        }
-        throw AdbException.ProtocolError("Expected OKAY/FAIL, got: '$responseStr'")
     }
 
     override fun close() {

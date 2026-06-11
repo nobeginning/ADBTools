@@ -20,12 +20,10 @@ import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material.icons.filled.AccountTree
-import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -75,9 +73,7 @@ private data class TestTool(
 
 /** 静态工具列表，避免每次 recomposition 重建 */
 private val testTools = listOf(
-    TestTool("Server 信息", "ADB Server 状态与版本", Icons.Filled.Info, requireDevice = false) { "test/server" },
     TestTool("文件浏览器", "浏览设备文件系统", Icons.Filled.Folder) { serial -> "test/files/$serial" },
-    TestTool("端口转发", "管理端口转发规则", Icons.Filled.SwapHoriz) { serial -> "test/forward/$serial" },
     TestTool("设备属性", "查看系统属性 getprop", Icons.Filled.Settings) { serial -> "test/props/$serial" },
     TestTool("包管理", "查看与管理应用包", Icons.Filled.Inventory2) { serial -> "test/packages/$serial" },
     TestTool("截图", "设备屏幕截图", Icons.Filled.CameraAlt) { serial -> "test/screenshot/$serial" },

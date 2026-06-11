@@ -10,9 +10,7 @@ object NavRoutes {
 
     // 测试工具
     const val TEST_HUB = "test_hub"
-    const val TEST_SERVER = "test/server"
     const val TEST_FILES = "test/files/{serial}"
-    const val TEST_FORWARD = "test/forward/{serial}"
     const val TEST_PROPS = "test/props/{serial}"
     const val TEST_PACKAGES = "test/packages/{serial}"
     const val TEST_SCREENSHOT = "test/screenshot/{serial}"
@@ -23,7 +21,6 @@ object NavRoutes {
 
     fun shellRoute(serial: String): String = "shell/$serial"
     fun testFilesRoute(serial: String): String = "test/files/$serial"
-    fun testForwardRoute(serial: String): String = "test/forward/$serial"
     fun testPropsRoute(serial: String): String = "test/props/$serial"
     fun testPackagesRoute(serial: String): String = "test/packages/$serial"
     fun testScreenshotRoute(serial: String): String = "test/screenshot/$serial"

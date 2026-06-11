@@ -15,10 +15,6 @@ sealed class AdbException(
     class AuthenticationFailed(reason: String) :
         AdbException("ADB authentication failed: $reason")
 
-    /** 未找到目标设备 */
-    class DeviceNotFound(serial: String) :
-        AdbException("Device not found: $serial")
-
     /** 服务打开失败 */
     class ServiceError(service: String, reason: String) :
         AdbException("Service '$service' error: $reason")
